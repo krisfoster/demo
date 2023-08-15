@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <title>Graal Cloud Native Sample</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+            crossorigin="anonymous">
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js" integrity="sha512-STof4xm1wgkfm7heWqFJVn58Hm3EtS31XFaagaa8VMReCXAkQnJZ+jEy8PCC/iT18dFy95WcExNHFTqLyp72eQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
+        <script>
+            console.log("Script running...");
+            function updateBucketList() {
+                // Get the bucket contents
+                $.ajax({
+                    url: "/pictures",
+                    type: "GET",
+                    success: function(result) {
+                        console.log(result);
+                        $("#listResults").empty();
+                        $("#listResults").append("<h3 class='col-md-10'>Bucket Contents</h3>")
+                        $("#listResults").append("<ul id='list1' class='col-md-10 list-unstyled'></ul>")
+                        console.log(result);
+                        $.each(result, function(index, value){
+                            console.log(value);
+                            var userID = value.split('.')[0]
+                            $("#list1").append("<li><a href='/pictures/" + userID + "' target='_blank'>" + value + "</a></li>");
+                        });
+                    }
+                }).done(function(msg){
+                    console.log("list Done: " + msg)
+                });
+            }
+            $(document).ready(function() {
+                console.log("Document Ready...");
+                $("#succesAlert").hide();
+                updateBucketList();
+                $("#upload").on('submit',function(event){
+                    event.preventDefault();
+                    var formData = new FormData();
+                    formData.append('fileUpload', $('#fileUpload')[0].files[0]);
+                    console.log(formData);
+                    console.log("Processing click...");
+                    var fileName = $('#upload #uploadFileName').val();
+                    console.log("FileName : " + fileName);
+                    $.ajax({
+                        url: "/pictures/" + fileName,
+                        type: "POST",
+                        data: formData,
+                        processData: false,  // tell jQuery not to process the data
+                        contentType: false,
+                        success: function(result) {
+                            console.log(result);
+                            $("#uploadedImage").attr("src", "/pictures/" + fileName);
+                            $("#succesAlert").show();
+                            updateBucketList();
+                        }
+                        });
+                    });
+                });
+        </script>
+    </head>
+    <body >
+        <div class="container align-items-center justify-content-center p-5">
+
+            <div class="row">
+                <div class="card border-bottom bg-dark text-light rounded-5 col-md-12">
+                    <div class="page-header text-center">
+                        <h1 class="display-2">Graal Cloud Native</h1>
+                        <h2>Object Storage Demo</h2>
+                    </div>
+                    <div class="justify-content-center">
+                        <img width="250px" src="/mascoooot2x.png" class="img-fluid"/>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row p-5 mt-2" style="border: 1px solid grey;">
+                <form name="upload" id="upload" class="form-horizontal">
+                    <div class="form-group">
+                        <label for="uploadFileName" class="col-md-4 control-label">User Profile Name</label>
+                        <input type="text" class="col-md-6" id="uploadFileName" name="uploadFile" placeholder="User Name"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="fileUpload" class="col-md-4 control-label">Profile Image</label>
+                        <input type="file" class="col-md-6" id="fileUpload" name="fileUpload"/>
+                    </div>
+                    <div class="col-md-offset-4 col-md-6">
+                        <button type="submit" id="#upload #uploadButton"
+                        class="btn btn-primary">Upload</button>
+                    </div>
+                    <br/>
+                    <div id="succesAlert"
+                        class="col-md-10 alert alert-success alert-dismissible fade show"
+                        display="none"
+                        role="alert">
+                        <h4>Image uploaded</h4>
+                        <img src="" id="uploadedImage" width="25%"
+                            class="img-thumbnail img-responsive col-md-offset-2 col-md-6">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="row p-5 mt-2" id="listResults"
+                style="border: 1px solid grey;">
+                <!-- Placeholder : content will be added here by the scripts -->
+            </div>
+
+        </div>
+    </body>
+</html>

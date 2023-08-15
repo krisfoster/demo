@@ -1,0 +1,23 @@
+micronaut:
+  server:
+    multipart:
+      # Supports uploading images over 1MB in Size
+      max-file-size: 20971520
+  router:
+    static-resources:
+      default:
+        paths:
+          - classpath:public
+        mapping: /**
+        enabled: true
+  object-storage:
+    oracle-cloud:
+      default:
+        bucket: '${OBJECT_STORAGE_BUCKET}'
+        namespace: '${OBJECT_STORAGE_NAMESPACE}'
+oci.config.profile: DEFAULT
+netty:
+  default:
+    allocator:
+      max-order: 3
+

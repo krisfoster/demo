@@ -1,0 +1,9 @@
+micronaut:
+  object-storage:
+    aws:
+      default:
+        bucket: '${OBJECT_STORAGE_BUCKET}'
+netty:
+  default:
+    allocator:
+      max-order: 3
