@@ -1,3 +1,19 @@
+# Intro
+
+This is a version of the object storage GDK sample guide tht supports a front end. You will need to configure various properties to wire it up to an object storgae bucket and will require valid cloud sdk cnfig.
+
+Set the following env vars with the co-ords of your OCI object storage bucket:
+
+bucket: '${OBJECT_STORAGE_BUCKET}'
+namespace: '${OBJECT_STORAGE_NAMESPACE}'
+
+## Runnning
+
+./mvnw install -pl lib -am &&  ./mvnw mn:run -pl oci
+
+
+
+
 ## Micronaut 3.7.4 Documentation
 
 - [User Guide](https://docs.micronaut.io/3.7.4/guide/)
